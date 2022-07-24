@@ -71,9 +71,6 @@ int queueEmpty(const struct queue *q)
  */
 size_t getIndex(struct queue *q)
 {
-    size_t index = 0;;
-    struct elt *e;
-
     assert(!queueEmpty(q));
     return q->head->index;
 }
@@ -86,7 +83,6 @@ size_t getIndex(struct queue *q)
  */
 size_t getDistance(struct queue *q)
 {
-    struct elt *e;
     assert(!queueEmpty(q));
 
     return q->head->distance;

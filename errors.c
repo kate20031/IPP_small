@@ -1,9 +1,11 @@
-
+#define _XOPEN_SOURCE 400000
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
 #include "errors.h"
 #include "charArray.h"
+#include <stddef.h>
+
 
 void handleError(int index) {
     fprintf(stderr, "ERROR %d\n", index);
@@ -62,7 +64,7 @@ static bool checkNumberofWalls(charArray* bitPositions, Array* dimensionArray) {
 
 
 bool checkStartEnd(size_t start, size_t end, charArray* bitPositions, size_t volume) {
-    if (start < 0) {
+    if (start >= volume) {
         handleError(2);
         return false;
     }
@@ -95,8 +97,8 @@ void checkNoOutOfBounds(charArray* bitPositions, size_t volume, int* err) {
 static bool checkNumberOfLines() {
     char* extraLine = NULL;
     size_t bufferSize = 0;
-    ssize_t lineLength = getline(&extraLine, &bufferSize, stdin);
-    if (lineLength != -1) {
+    size_t lineLength = getline(&extraLine, &bufferSize, stdin);
+    if (lineLength != (size_t)-1) {
         handleError(5);
         free(extraLine);
         return false;
@@ -106,8 +108,7 @@ static bool checkNumberOfLines() {
 }
 
 
-bool checkErrors(Array* dimensionArray, Array* startArray, Array* endArray,
-                 charArray* bitPositions, size_t start, size_t end) {
+bool checkErrors(Array* dimensionArray, Array* startArray, Array* endArray, charArray* bitPositions) {
 
     bool ok =  checkArraysLength(startArray, endArray, dimensionArray);
 

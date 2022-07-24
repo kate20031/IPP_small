@@ -1,7 +1,3 @@
-//
-// Created by acer on 19.07.22.
-//
-
 #ifndef UNTITLED1_QUEUE_H
 #define UNTITLED1_QUEUE_H
 

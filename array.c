@@ -1,7 +1,6 @@
 #include <stddef.h>
 #include "array.h"
 #include "errors.h"
-#include <stdlib.h>
 #include <malloc.h>
 
 struct Array {
@@ -54,7 +53,7 @@ size_t getLength(Array *array){
 }
 
 void printArrayS(Array* array) {
-    for (int i = 1; i < array->length; ++i) {
+    for (size_t i = 1; i < array->length; ++i) {
         printf("%ld ", array->v[i]);
     }
     printf("\n");

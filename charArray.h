@@ -3,9 +3,11 @@
 
 #include <glob.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 struct charArray;
 typedef struct charArray charArray;
+
 
 charArray* createArrayChar();
 

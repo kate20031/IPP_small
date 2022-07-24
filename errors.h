@@ -17,8 +17,7 @@ bool checkStartEnd(size_t start, size_t end, charArray* bitPositions, size_t vol
 
 void checkNoOutOfBounds(charArray* bitPositions, size_t volume, int* err);
 
-bool checkErrors(Array* dimensionArray, Array* startArray, Array* endArray,
-                 charArray* bitPositions, size_t start, size_t end);
+bool checkErrors(Array* dimensionArray, Array* startArray, Array* endArray, charArray* bitPositions);
 
 
 #endif //UNTITLED1_ERRORS_H

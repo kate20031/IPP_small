@@ -15,7 +15,7 @@
 size_t findVolume(Array* dimensionArray) {
     size_t dimSize = getLength(dimensionArray);
     size_t volume = (dimSize == 0) ? 0 : 1;
-    for (int i = 0; i < dimSize; i++) {
+    for (size_t i = 0; i < dimSize; i++) {
         volume *= getElementFromArray(dimensionArray, i);
     }
     return volume;
@@ -31,9 +31,9 @@ size_t findVolume(Array* dimensionArray) {
  * @return - true, if it's safe to go to the "aim" cell,
  * false - otherwise,
  */
-static bool isSafe(int mazeDimension, charArray* bitPositions, bool* visited, size_t aim)
+static bool isSafe(size_t mazeDimension, charArray* bitPositions, bool* visited, size_t aim)
 {
-    return (aim >= 0 && aim < mazeDimension) && (getBit(bitPositions, aim) == 0) && (visited[aim] == false);
+    return (aim < mazeDimension) && (getBit(bitPositions, aim) == 0) && (visited[aim] == false);
 }
 
 
@@ -87,7 +87,7 @@ size_t findPath (charArray* bitPositions, Array* dimensionsArray, size_t start, 
     }
     size_t minDistance = INT64_MAX;
 
-    for (int i = 0; i < volume; i++) {
+    for (size_t i = 0; i < volume; i++) {
         visited[i] = false;
     }
 
