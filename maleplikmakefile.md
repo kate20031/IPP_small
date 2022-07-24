@@ -97,3 +97,8 @@ I to jest cały makefile, korzysta się z niego wpisując make i nazwa polecenia
 
 Musisz podmienić zależności oraz pliki .o na te z twojego projektu (i zamienić nazwę main na labyrinth).
 
+Po skompilowaniu, aby jescze raz skompilować musisz użyć komenty touch na wszystkich plikach w projekcie:
+    
+    touch *
+    
+Która nadpisuje czas ostatniej edycji.
