@@ -22,6 +22,34 @@ size_t findVolume(Array* dimensionArray) {
 }
 
 
+size_t convertIndex(Array *index, Array *dimensionArray) {
+    size_t newIndex = 0;
+    size_t product = 1;
+
+    for (size_t i = 0; i < getLength(dimensionArray); i++) {
+        newIndex += product * (getElementFromArray(index, i) - 1);
+        product *= getElementFromArray(dimensionArray, i);
+    }
+    return newIndex;
+}
+
+
+void convertIndexRev(size_t index, size_t *coordinatesArray, Array *dimensionArray) {
+    size_t rest;
+
+    if (getLength(dimensionArray) == 1) {
+        coordinatesArray[0] = index + 1;
+    } else {
+        for (size_t i = 0; i < getLength(dimensionArray); i++) {
+            rest = index % getElementFromArray(dimensionArray, i);
+            coordinatesArray[i] = rest + 1;
+            index -= rest;
+            index /= getElementFromArray(dimensionArray, i);
+        }
+    }
+}
+
+
 /**
  * Checking if it's possible to go to the neighbouring field from the current position.
  * @param mazeDimension - dimension of maze.
@@ -47,7 +75,7 @@ static bool isSafe(size_t mazeDimension, charArray* bitPositions, const bool* vi
  * @return - true, if the cell is out of border,
  * false - otherwise.
  */
-static bool outMazeBorder(Array* dimensionsArray, size_t cell, size_t neighbor, size_t index) {
+static bool outMazeBorder(Array* dimensionsArray, size_t cell, long  long neighbor, size_t index) {
     size_t* coordinates = malloc (sizeof(size_t) * getLength(dimensionsArray));
     convertIndexRev(cell, coordinates, dimensionsArray);
 
@@ -55,7 +83,7 @@ static bool outMazeBorder(Array* dimensionsArray, size_t cell, size_t neighbor, 
         free(coordinates);
         return true;
     }
-    if (coordinates[index] == 1 && neighbor < 0) {
+    if (coordinates[index] == 1 && neighbor  < 0) {
         free(coordinates);
         return true;
     }
@@ -91,7 +119,7 @@ size_t findPath (charArray* bitPositions, Array* dimensionsArray, size_t start, 
         visited[i] = false;
     }
 
-    struct queue *q;
+    queue *q;
     q = queueCreate();
     visited[start] = true;
     addToQueue(q, start, 0);
@@ -107,7 +135,7 @@ size_t findPath (charArray* bitPositions, Array* dimensionsArray, size_t start, 
             minDistance = distance;
             break;
         }
-        size_t neighbor = 1;
+        long long neighbor = 1;
         for (size_t i = 0; i < dimSize; i++) {
 
             if (isSafe(volume, bitPositions, visited, index + neighbor) &&
@@ -123,10 +151,7 @@ size_t findPath (charArray* bitPositions, Array* dimensionsArray, size_t start, 
             neighbor *= getElementFromArray(dimensionsArray, i);
         }
     }
-    while (!queueEmpty(q)) {
-        removeFirst(q);
-    }
-    free(q);
+    deleteQueue(q);
     free(visited);
     if (minDistance != INT64_MAX) {
         return minDistance;

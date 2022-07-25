@@ -8,7 +8,7 @@ struct Array {
     size_t memory;
     size_t *v;
 };
-//typedef struct Array Array;
+typedef struct Array Array;
 
 Array* createArray() {
     Array* array = malloc(sizeof (Array));

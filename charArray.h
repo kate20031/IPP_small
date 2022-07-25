@@ -23,6 +23,7 @@ size_t getBit(charArray* array, size_t index);
 
 void setBit(charArray* array, size_t index);
 
-//bool isAfterR(charArray* array);
+char indexToHex(size_t rest, size_t index, charArray* bitPositions);
+
 
 #endif //UNTITLED1_CHARARRAY_H

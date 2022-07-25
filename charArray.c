@@ -10,11 +10,11 @@ struct charArray {
     size_t memory;
     char *v;
 };
-//typedef struct charArray charArray;
+typedef struct charArray charArray;
 
 
-charArray* createArrayChar() {
-    charArray* array = malloc(sizeof(charArray));
+charArray *createArrayChar() {
+    charArray *array = malloc(sizeof(charArray));
     if (array == NULL) {
         return array;
     }
@@ -30,7 +30,7 @@ charArray* createArrayChar() {
 }
 
 
-void pushBackChar(charArray* array, char element) {
+void pushBackChar(charArray *array, char element) {
     if (array->memory == array->length) {
         array->v = realloc(array->v, sizeof(char) * array->memory * 2);
         if (array->v == NULL) {
@@ -43,45 +43,84 @@ void pushBackChar(charArray* array, char element) {
 }
 
 
-void deleteArrayChar(charArray* array) {
+void deleteArrayChar(charArray *array) {
     free(array->v);
     free(array);
 }
 
 
-char getElementFromArrayChar(charArray* array, size_t index) {
+char getElementFromArrayChar(charArray *array, size_t index) {
     return array->v[index];
 }
 
 
-size_t getLengthChar(charArray *array){
+size_t getLengthChar(charArray *array) {
     return array->length;
 }
 
 
-size_t getBit(charArray* array, size_t index) {
+size_t getBit(charArray *array, size_t index) {
     char number;
 
-    if (index/4 < getLengthChar(array)) {
-        number = getElementFromArrayChar(array, getLengthChar(array)-1-index / 4);
-    }
-    else {
+    if (index / 4 < getLengthChar(array)) {
+        number = getElementFromArrayChar(array, getLengthChar(array) - 1 - index / 4);
+    } else {
         return 0;
     }
     int numberDex = hexToInt(number);
-    return ((1<<(index % 4) & numberDex)>>(index % 4));
+    return ((1 << (index % 4) & numberDex) >> (index % 4));
 }
 
 
-void setBit(charArray* array, size_t index) {
+static char *getBinary(size_t number) {
+    char *temp = malloc(sizeof(char) * 4);
+    int size = 0;
+
+    for (int bit = 1 << 3; bit != 0; bit >>= 1) {
+        temp[size++] = (number & bit) ? '1' : '0';
+    }
+    return temp;
+}
+
+
+static char intToHex(int x) {
+    if (x >= 0 && x <= 9) {
+        return (char) (x + '0');
+    } else if (x >= 10 && x <= 15) {
+        return (char) (x - 'a' + 10);
+    }
+    return ' ';
+}
+
+
+/**
+ * Function convert index of cell from decimal to hex.
+ * Function convert decimal index to hex number,
+ * so that one hex char in "bitPositions" array tells
+ * about 4 cells.
+ * @param rest - rest of division index by 4.
+ * @param index - decimal index of cell.
+ * @param bitPositions - an array(binary) with stores info if cells are empty.
+ * @return  hex index of cell(char).
+ */
+char indexToHex(size_t rest, size_t index, charArray *bitPositions) {
+    int number = 0;
+    char previousElem = getElementFromArrayChar(bitPositions, index);
+    char *currBinary = getBinary(hexToInt(previousElem));
+
+    currBinary[3 - rest] = 1;
+    for (int i = 3; i >= 0; i--) {
+        if (currBinary[i] == 1) {
+            number += 1 << (3 - i);
+        }
+    }
+    free(currBinary);
+    return intToHex(number);
+}
+
+
+void setBit(charArray *array, size_t index) {
     size_t newIndex = (index / 4);
-    char hex = binToHex(index % 4, newIndex, array);
-    array->v[getLengthChar(array)-1-newIndex] = hex;
+    char hex = indexToHex(index % 4, newIndex, array);
+    array->v[getLengthChar(array) - 1 - newIndex] = hex;
 }
-
-//void printArray(charArray* array) {
-//    for (int i = 0; i < array->length; ++i) {
-//        printf("%c ", array->v[i]);
-//    }
-//    printf("\n");
-//}

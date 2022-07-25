@@ -5,7 +5,7 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_FLAGS "-std=c17 -Wall -Wextra -Wno-implicit-fallthrough")
 
 
-add_executable(nowaWersja labirinth.c
+add_executable(nowaWersja main.c
         input.c input.h  queue.c queue.h
         errors.c errors.h
-        array.c array.h charArray.c charArray.h simulation.c simulation.h array.h)
+        array.c array.h charArray.c charArray.h simulation.c simulation.h)

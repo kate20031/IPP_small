@@ -4,6 +4,7 @@
 #include <limits.h>
 #include "errors.h"
 #include "charArray.h"
+#include "simulation.h"
 #include <stddef.h>
 
 
@@ -63,28 +64,7 @@ static bool checkNumberofWalls(charArray* bitPositions, Array* dimensionArray) {
 }
 
 
-bool checkStartEnd(size_t start, size_t end, charArray* bitPositions, size_t volume) {
-    if (start >= volume) {
-        handleError(2);
-        return false;
-    }
-    if (end >= volume) {
-        handleError(3);
-        return false;
-    }
-
-    if (getBit(bitPositions, start) == 1)    {
-        handleError(2);
-        return false;
-    }
-    else if (getBit(bitPositions, end) == 1) {
-        handleError(3);
-        return false;
-    }
-    return true;
-}
-
-void checkNoOutOfBounds(charArray* bitPositions, size_t volume, int* err) {
+void checkVolume(charArray* bitPositions, size_t volume, int* err) {
     for (size_t i = getLengthChar(bitPositions)*4 - 1; i >= volume ; i--) {
         if (getBit(bitPositions, i) == 1) {
             *err = 1;
@@ -107,6 +87,33 @@ static bool checkNumberOfLines() {
     return true;
 }
 
+static bool checkStartEnd(Array *dimensionArray, Array *startArray, Array *endArray, charArray* bitPositions) {
+
+    size_t volume = findVolume(dimensionArray);
+    size_t start = convertIndex(startArray, dimensionArray);
+    size_t end = convertIndex(endArray, dimensionArray);
+
+    if (start >= volume) {
+        handleError(2);
+        return false;
+    }
+    if (end >= volume) {
+        handleError(3);
+        return false;
+    }
+
+    if (getBit(bitPositions, start) == 1)    {
+        handleError(2);
+        return false;
+    }
+    else if (getBit(bitPositions, end) == 1) {
+        handleError(3);
+        return false;
+    }
+    return true;
+}
+
+
 
 bool checkErrors(Array* dimensionArray, Array* startArray, Array* endArray, charArray* bitPositions) {
 
@@ -117,6 +124,9 @@ bool checkErrors(Array* dimensionArray, Array* startArray, Array* endArray, char
     }
     if (ok) {
         ok = checkNumberOfLines();
+    }
+    if (ok) {
+        ok = checkStartEnd(dimensionArray, startArray, endArray, bitPositions);
     }
     return ok;
 }
