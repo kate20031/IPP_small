@@ -8,7 +8,7 @@ struct Array {
     size_t memory;
     size_t *v;
 };
-typedef struct Array Array;
+//typedef struct Array Array;
 
 Array* createArray() {
     Array* array = malloc(sizeof (Array));
@@ -50,11 +50,4 @@ size_t getElementFromArray(Array* array, size_t index) {
 
 size_t getLength(Array *array){
     return array->length;
-}
-
-void printArrayS(Array* array) {
-    for (size_t i = 1; i < array->length; ++i) {
-        printf("%ld ", array->v[i]);
-    }
-    printf("\n");
 }

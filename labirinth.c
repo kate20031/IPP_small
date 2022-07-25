@@ -13,8 +13,8 @@ int main(){
     Array* endArray = createArray();
     charArray* bitPositions = createArrayChar();
     size_t volume;
-    size_t start = 0;
-    size_t end = 0;
+    size_t start;
+    size_t end;
 
     bool ok = readInput(dimensionArray, startArray, endArray, bitPositions, &err) &&
     checkErrors(dimensionArray, startArray, endArray, bitPositions);

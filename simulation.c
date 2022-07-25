@@ -7,9 +7,9 @@
 
 
 /**
- * Function which finds volme of maze.
+ * Function which finds volume of maze.
  * @param dimensions - array of maze dimensions
- * @param dimSize – size of "dimesions" array.
+ * @param dimSize – size of "dimensions" array.
  * @return volume of maze.
  */
 size_t findVolume(Array* dimensionArray) {
@@ -31,7 +31,7 @@ size_t findVolume(Array* dimensionArray) {
  * @return - true, if it's safe to go to the "aim" cell,
  * false - otherwise,
  */
-static bool isSafe(size_t mazeDimension, charArray* bitPositions, bool* visited, size_t aim)
+static bool isSafe(size_t mazeDimension, charArray* bitPositions, const bool* visited, size_t aim)
 {
     return (aim < mazeDimension) && (getBit(bitPositions, aim) == 0) && (visited[aim] == false);
 }
@@ -47,7 +47,7 @@ static bool isSafe(size_t mazeDimension, charArray* bitPositions, bool* visited,
  * @return - true, if the cell is out of border,
  * false - otherwise.
  */
-static bool outMazeBorder(Array* dimensionsArray, size_t cell, long long neighbor, size_t index) {
+static bool outMazeBorder(Array* dimensionsArray, size_t cell, size_t neighbor, size_t index) {
     size_t* coordinates = malloc (sizeof(size_t) * getLength(dimensionsArray));
     convertIndexRev(cell, coordinates, dimensionsArray);
 
@@ -66,7 +66,7 @@ static bool outMazeBorder(Array* dimensionsArray, size_t cell, long long neighbo
 
 /**
  * Function which search the shortest path in maze
- * @param bitPositions - an array(binary) with stores info if cells are epmty.
+ * @param bitPositions - an array(binary) with stores info if cells are empty.
  * @param bitPosSize - size of "bitPositions" array.
  * @param mazeDimension – dimension of maze.
  * @param dimensionsArray – an array of dimensions.

@@ -10,7 +10,7 @@ struct charArray {
     size_t memory;
     char *v;
 };
-typedef struct charArray charArray;
+//typedef struct charArray charArray;
 
 
 charArray* createArrayChar() {
