@@ -29,7 +29,7 @@ int main(){
         if (ok) {
             size_t result = findPath(bitPositions, dimensionArray, start, end);
 
-            if (result == (size_t)-1) {
+            if (result == (size_t)(-1)) {
                 printf("NO WAY\n");
             } else if (result != (size_t)-2) {
                 printf("%ld\n", result);
