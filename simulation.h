@@ -1,7 +1,3 @@
-//
-// Created by acer on 21.07.22.
-//
-
 #ifndef UNTITLED1_SIMULATION_H
 #define UNTITLED1_SIMULATION_H
 
@@ -11,8 +7,12 @@
 #include "queue.h"
 #include "input.h"
 
-size_t findVolume(Array* dimensionArray);
+size_t findVolume(Array *dimensionArray);
 
-size_t findPath (charArray* bitPositions, Array* dimensionsArray, size_t start, size_t end);
+size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArray, Array *endArray, FILE *fptr);
+
+size_t convertIndex(Array *coordinates, Array *dimensionArray);
+
+void convertIndexRev(size_t index, size_t *coordinatesArray, Array *dimensionArray);
 
 #endif //UNTITLED1_SIMULATION_H

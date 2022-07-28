@@ -59,7 +59,7 @@ size_t getLengthChar(charArray *array) {
 }
 
 
-size_t getBit(charArray *array, size_t index) {
+int getBit(charArray *array, size_t index) {
     char number;
 
     if (index / 4 < getLengthChar(array)) {

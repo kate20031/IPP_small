@@ -22,18 +22,32 @@ size_t findVolume(Array *dimensionArray) {
 }
 
 
-size_t convertIndex(Array *index, Array *dimensionArray) {
-    size_t newIndex = 0;
+/**
+ * Function converts coordinates to index.
+ * Function converts coordinates of cell to index(decimal) of position in maze.
+ * @param coordinates - coordinates of the cell.
+ * @param dimensionArray - array of maze dimensions.
+ * @return index
+ */
+size_t convertIndex(Array *coordinates, Array *dimensionArray) {
+    size_t index = 0;
     size_t product = 1;
 
     for (size_t i = 0; i < getLength(dimensionArray); i++) {
-        newIndex += product * (getElementFromArray(index, i) - 1);
+        index += product * (getElementFromArray(coordinates, i) - 1);
         product *= getElementFromArray(dimensionArray, i);
     }
-    return newIndex;
+    return index;
 }
 
 
+/**
+ * Convert index of cell to the array of coordinates.
+ * Reverse function of "convertIndex".
+ * @param index – index of cell.
+ * @param coordinatesArray  - array of coordinates.
+ * @param dimensionArray - array of maze dimensions.
+ */
 void convertIndexRev(size_t index, size_t *coordinatesArray, Array *dimensionArray) {
     size_t rest;
 
@@ -59,8 +73,8 @@ void convertIndexRev(size_t index, size_t *coordinatesArray, Array *dimensionArr
  * @return - true, if it's safe to go to the "aim" cell,
  * false - otherwise,
  */
-static bool isSafe(size_t mazeDimension, charArray *bitPositions, charArray *visited, size_t aim) {
-    return (aim < mazeDimension) && (getBit(bitPositions, aim) == 0) && (getBit(visited, aim) == 0);
+static bool isSafe(size_t mazeDimension, charArray *bitPositions, const char *visited, size_t aim) {
+    return (aim >= 0 && aim < mazeDimension) && (getBit(bitPositions, aim) == 0) && (visited[aim] == '0');
 }
 
 
@@ -74,15 +88,12 @@ static bool isSafe(size_t mazeDimension, charArray *bitPositions, charArray *vis
  * @return - true, if the cell is out of border,
  * false - otherwise.
  */
-static bool outMazeBorder(Array *dimensionsArray, size_t cell, long long neighbor, size_t index) {
+static bool outMazeBorder(Array *dimensionsArray, size_t cell, bool moveToLeft, size_t index) {
     size_t *coordinates = malloc(sizeof(size_t) * getLength(dimensionsArray));
     convertIndexRev(cell, coordinates, dimensionsArray);
 
-    if ((coordinates[index] == getElementFromArray(dimensionsArray, index)) && neighbor > 0) {
-        free(coordinates);
-        return true;
-    }
-    if (coordinates[index] == 1 && neighbor < 0) {
+    if (((coordinates[index] == getElementFromArray(dimensionsArray, index)) && !moveToLeft)
+        || (coordinates[index] == 1 && moveToLeft)) {
         free(coordinates);
         return true;
     }
@@ -103,24 +114,31 @@ static bool outMazeBorder(Array *dimensionsArray, size_t cell, long long neighbo
  * @return the length of shortest path, if exists,
  *          -1 – otherwise.
  */
-size_t findPath(charArray *bitPositions, Array *dimensionsArray, size_t start, size_t end) {
+size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArray, Array *endArray, FILE *fptr) {
     size_t dimSize = getLength(dimensionsArray);
     size_t volume = findVolume(dimensionsArray);
-    charArray *visited = createArrayChar();
+    size_t start = convertIndex(startArray, dimensionsArray);
+    size_t end = convertIndex(endArray, dimensionsArray);
+    char *visited = malloc(sizeof(char) * volume);
 
     if (visited == NULL) {
+        deleteArray(dimensionsArray);
+        deleteArray(startArray);
+        deleteArray(endArray);
+        deleteArrayChar(bitPositions);
+        fclose(fptr);
         handleError(0);
         return -2;
     }
     size_t minDistance = INT64_MAX;
 
-    for (size_t i = 0; i < volume / 4; i++) {
-        pushBackChar(visited, '0');
+    for (size_t i = 0; i < volume; i++) {
+        visited[i] = '0';
     }
 
-    queue *q;
+    struct queue *q;
     q = queueCreate();
-    setBit(visited, end);
+    visited[start] = '1';
     addToQueue(q, start, 0);
 
     while (!queueEmpty(q)) {
@@ -134,17 +152,17 @@ size_t findPath(charArray *bitPositions, Array *dimensionsArray, size_t start, s
             minDistance = distance;
             break;
         }
-        long long neighbor = 1;
+        size_t neighbor = 1;
         for (size_t i = 0; i < dimSize; i++) {
 
             if (isSafe(volume, bitPositions, visited, index + neighbor) &&
-                !outMazeBorder(dimensionsArray, index, neighbor, i)) {
-                setBit(visited, index + neighbor);
+                !outMazeBorder(dimensionsArray, index, false, i)) {
+                visited[index + neighbor] = '1';
                 addToQueue(q, index + neighbor, distance + 1);
             }
             if (isSafe(volume, bitPositions, visited, index - neighbor) &&
-                !outMazeBorder(dimensionsArray, index, -1 * neighbor, i)) {
-                setBit(visited, index - neighbor);
+                !outMazeBorder(dimensionsArray, index, true, i)) {
+                visited[index - neighbor] = '1';
                 addToQueue(q, index - neighbor, distance + 1);
             }
             neighbor *= getElementFromArray(dimensionsArray, i);

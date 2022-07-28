@@ -1,46 +1,59 @@
-#define _XOPEN_SOURCE 400000
+#define _POSIX_C_SOURCE 200809L
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
 #include "errors.h"
 #include "charArray.h"
 #include "simulation.h"
 #include <stddef.h>
+#include <stdint.h>
+
 
 
 void handleError(int index) {
-    fprintf(stderr, "ERROR %d\n", index);
-    if (index == 0) exit(1);
+    FILE *fileError;
+    fileError  = fopen ("file.err", "w");
+    fprintf(fileError, "ERROR %d\n", index);
+    fclose(fileError);
+    if (index == 0) {
+        exit(1);
+    }
 }
 
 
-bool checkArraysLength(Array* startArray, Array* endArray, Array* dimensionArray) {
+bool checkArraysLength(Array *startArray, Array *endArray, Array *dimensionArray) {
     if (getLength(startArray) != getLength(dimensionArray)) {
-        handleError( 2);
+        handleError(2);
         return false;
     }
     if (getLength(endArray) != getLength(dimensionArray)) {
-        handleError( 3);
+        handleError(3);
         return false;
     }
     return true;
 }
 
 
-bool checkDimensions(Array* dimensionArray) {
-    size_t difference = ULLONG_MAX;
+void checkDimensions(Array *dimensionArray, Array *startArray, Array *endArray, charArray *bitPositions, int *err, FILE *fptr) {
+    size_t max = SIZE_MAX;
+
     for (size_t i = 0; i < getLength(dimensionArray); i++) {
-        difference /= getElementFromArray(dimensionArray, i);
-        if (difference < 1) {
-            handleError( 0);
-            return false;
+        max /= getElementFromArray(dimensionArray, i);
+        if (max < 1) {
+            deleteArray(dimensionArray);
+            deleteArray(startArray);
+            deleteArray(endArray);
+            deleteArrayChar(bitPositions);
+            fclose(fptr);
+            handleError(0);
+            *err = 1;
+            return;
         }
     }
-    return true;
 }
 
 
-static bool checkNumberofWalls(charArray* bitPositions, Array* dimensionArray) {
+static bool checkNumberOfWalls(charArray *bitPositions, Array *dimensionArray) {
     size_t lastBit = 0;
     size_t bitPosSize = getLengthChar(bitPositions);
     size_t dimSize = getLength(dimensionArray);
@@ -51,7 +64,7 @@ static bool checkNumberofWalls(charArray* bitPositions, Array* dimensionArray) {
             break;
         }
     }
-    size = (dimSize == 0)? 0 : 1;
+    size = (dimSize == 0) ? 0 : 1;
 
     for (size_t i = 0; i < dimSize; i++) {
         size *= getElementFromArray(dimensionArray, i);
@@ -64,8 +77,8 @@ static bool checkNumberofWalls(charArray* bitPositions, Array* dimensionArray) {
 }
 
 
-void checkVolume(charArray* bitPositions, size_t volume, int* err) {
-    for (size_t i = getLengthChar(bitPositions)*4 - 1; i >= volume ; i--) {
+void checkVolume(charArray *bitPositions, size_t volume, int *err) {
+    for (size_t i = getLengthChar(bitPositions) * 4 - 1; i >= volume; i--) {
         if (getBit(bitPositions, i) == 1) {
             *err = 1;
             break;
@@ -74,11 +87,12 @@ void checkVolume(charArray* bitPositions, size_t volume, int* err) {
 }
 
 
-static bool checkNumberOfLines() {
-    char* extraLine = NULL;
+static bool checkNumberOfLines(FILE *fptr) {
+    char *extraLine = NULL;
     size_t bufferSize = 0;
-    size_t lineLength = getline(&extraLine, &bufferSize, stdin);
-    if (lineLength != (size_t)-1) {
+    size_t lineLength = getline(&extraLine, &bufferSize, fptr);
+
+    if (lineLength != (size_t) -1) {
         handleError(5);
         free(extraLine);
         return false;
@@ -87,7 +101,8 @@ static bool checkNumberOfLines() {
     return true;
 }
 
-static bool checkStartEnd(Array *dimensionArray, Array *startArray, Array *endArray, charArray* bitPositions) {
+
+static bool checkStartEnd(Array *dimensionArray, Array *startArray, Array *endArray, charArray *bitPositions) {
 
     size_t volume = findVolume(dimensionArray);
     size_t start = convertIndex(startArray, dimensionArray);
@@ -101,12 +116,11 @@ static bool checkStartEnd(Array *dimensionArray, Array *startArray, Array *endAr
         handleError(3);
         return false;
     }
-
-    if (getBit(bitPositions, start) == 1)    {
+    if (getBit(bitPositions, start) == 1) {
         handleError(2);
         return false;
     }
-    else if (getBit(bitPositions, end) == 1) {
+    if (getBit(bitPositions, end) == 1) {
         handleError(3);
         return false;
     }
@@ -114,16 +128,41 @@ static bool checkStartEnd(Array *dimensionArray, Array *startArray, Array *endAr
 }
 
 
+bool checkRInput(Array *numbers, int *err) {
+    for (size_t i = 0; i < getLength(numbers); i++) {
+        if (getElementFromArray(numbers, i) > UINT32_MAX) {
+            *err = 1;
+            return false;
+        }
+    }
 
-bool checkErrors(Array* dimensionArray, Array* startArray, Array* endArray, charArray* bitPositions) {
+    if (getElementFromArray(numbers, 2) == 0) {
+        *err = 1;
+        return false;
+    }
+    return true;
+}
 
-    bool ok =  checkArraysLength(startArray, endArray, dimensionArray);
+
+void checkInput(Array *array, int *err) {
+    for (size_t i = 0; i < getLength(array); i++) {
+        if (getElementFromArray(array, i) == 0) {
+            *err = 1;
+            return;
+        }
+    }
+}
+
+
+bool checkErrors(Array *dimensionArray, Array *startArray, Array *endArray, charArray *bitPositions, FILE *fptr) {
+
+    bool ok = checkArraysLength(startArray, endArray, dimensionArray);
 
     if (ok) {
-        ok = checkNumberofWalls(bitPositions, dimensionArray);
+        ok = checkNumberOfWalls(bitPositions, dimensionArray);
     }
     if (ok) {
-        ok = checkNumberOfLines();
+        ok = checkNumberOfLines(fptr);
     }
     if (ok) {
         ok = checkStartEnd(dimensionArray, startArray, endArray, bitPositions);

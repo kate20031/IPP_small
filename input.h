@@ -5,12 +5,12 @@
 #include "array.h"
 #include "charArray.h"
 #include <stdbool.h>
+#include <stdio.h>
 
-void readInput(Array *dimensionsArray, Array *startArray, Array *endArray, charArray *bitPositions, int *err);
 
-size_t convertIndex(Array* index, Array* dimensionArray);
+void readInput(Array *dimensionsArray, Array *startArray, Array *endArray, charArray *bitPositions, int *err, FILE *fptr);
 
-void convertIndexRev(size_t index, size_t* coordinatsArray, Array* dimensionArray);
+void convertIndexRev(size_t index, size_t *coordinatesArray, Array *dimensionArray);
 
 int hexToInt(char c);
 

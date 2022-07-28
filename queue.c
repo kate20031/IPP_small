@@ -2,11 +2,13 @@
 #include <malloc.h>
 #include "queue.h"
 
+
 struct queue {
     struct elt *head;
     struct elt *tail;
 };
 typedef struct queue queue;
+
 
 struct elt {
     struct elt *next;
@@ -15,12 +17,11 @@ struct elt {
 };
 typedef struct elt elt;
 
+
 /** Function create a new empty queue.
- *
  * @return  return new queue
  */
-queue* queueCreate(void)
-{
+queue *queueCreate(void) {
     queue *q;
     q = malloc(sizeof(queue));
     q->head = q->tail = 0;
@@ -34,8 +35,7 @@ queue* queueCreate(void)
  * @param index – index of the cell in maze.
  * @param distance – maintains the length of the path from a source cell to a current cell.
  */
-void addToQueue(queue *q, size_t index, size_t distance)
-{
+void addToQueue(queue *q, size_t index, size_t distance) {
     elt *e;
     e = malloc(sizeof(elt));
     assert(e);
@@ -43,7 +43,7 @@ void addToQueue(queue *q, size_t index, size_t distance)
     e->index = index;
     e->distance = distance;
     e->next = 0;
-    if(q->head == 0) {
+    if (q->head == 0) {
         q->head = e;
     } else {
         q->tail->next = e;
@@ -59,8 +59,7 @@ void addToQueue(queue *q, size_t index, size_t distance)
  * @return 1 - if it's empty,
  *         0 - otherwise.
  */
-int queueEmpty(const queue *q)
-{
+int queueEmpty(const queue *q) {
     return (q->head == 0);
 }
 
@@ -70,8 +69,7 @@ int queueEmpty(const queue *q)
  * @param q
  * @return
  */
-size_t getIndex(queue *q)
-{
+size_t getIndex(queue *q) {
     assert(!queueEmpty(q));
     return q->head->index;
 }
@@ -82,8 +80,7 @@ size_t getIndex(queue *q)
  * @param q - a queue.
  * @return  a distance from a source cell to a current cell.
  */
-size_t getDistance(queue *q)
-{
+size_t getDistance(queue *q) {
     assert(!queueEmpty(q));
 
     return q->head->distance;
@@ -94,8 +91,7 @@ size_t getDistance(queue *q)
  * Function removes element from front of queue.
  * @param q  - a queue.
  */
-void removeFirst(queue *q)
-{
+void removeFirst(queue *q) {
     elt *e;
     assert(!queueEmpty(q));
 
@@ -105,7 +101,10 @@ void removeFirst(queue *q)
     free(e);
 }
 
-
+/**
+ * Function delete queue.
+ * @param q - a queue.
+ */
 void deleteQueue(queue *q) {
     while (!queueEmpty(q)) {
         removeFirst(q);
