@@ -87,7 +87,7 @@ static char intToHex(int x) {
     if (x >= 0 && x <= 9) {
         return (char) (x + '0');
     } else if (x >= 10 && x <= 15) {
-        return (char) (x - 'a' + 10);
+        return (char) (x - '0' + 135);
     }
     return ' ';
 }
@@ -105,15 +105,16 @@ static char intToHex(int x) {
  */
 char indexToHex(size_t rest, size_t index, charArray *bitPositions) {
     int number = 0;
-    char previousElem = getElementFromArrayChar(bitPositions, index);
-    char *currBinary = getBinary(hexToInt(previousElem));
+    char previousElem = getElementFromArrayChar(bitPositions, getLengthChar(bitPositions) - 1 - index);
+    char *prevBinary = getBinary(hexToInt(previousElem));
+    char *currBinary = getBinary( 1 << rest);
 
-    currBinary[3 - rest] = 1;
     for (int i = 3; i >= 0; i--) {
-        if (currBinary[i] == 1) {
-            number += 1 << (3 - i);
+        if ((prevBinary[i] == '1') || (currBinary[i]  == '1')) {
+              number+= 1 << (3 - i);
         }
     }
+    free(prevBinary);
     free(currBinary);
     return intToHex(number);
 }
@@ -122,5 +123,7 @@ char indexToHex(size_t rest, size_t index, charArray *bitPositions) {
 void setBit(charArray *array, size_t index) {
     size_t newIndex = (index / 4);
     char hex = indexToHex(index % 4, newIndex, array);
-    array->v[getLengthChar(array) - 1 - newIndex] = hex;
+    if (newIndex < getLengthChar(array)) {
+        array->v[getLengthChar(array) - 1 - newIndex] = hex;
+    }
 }

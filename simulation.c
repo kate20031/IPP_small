@@ -6,12 +6,12 @@
 #include "errors.h"
 
 
-/**
- * Function which finds volume of maze.
- * @param dimensions - array of maze dimensions
- * @param dimSize – size of "dimensions" array.
- * @return volume of maze.
- */
+
+ /**
+  * Function which finds volume of maze.
+  * @param dimensionArray – an array of dimensions.
+  * @return volume of maze.
+  */
 size_t findVolume(Array *dimensionArray) {
     size_t dimSize = getLength(dimensionArray);
     size_t volume = (dimSize == 0) ? 0 : 1;
@@ -67,23 +67,22 @@ void convertIndexRev(size_t index, size_t *coordinatesArray, Array *dimensionArr
 /**
  * Checking if it's possible to go to the neighbouring field from the current position.
  * @param mazeDimension - dimension of maze.
- * @param maze - maze in binary representation
+ * @param bitPositions  – the array(hex) with stores info if cells are empty.
  * @param visited -  an array of (0/1) to keep track of visited cells.
  * @param aim - a cell, which will be checked.
  * @return - true, if it's safe to go to the "aim" cell,
- * false - otherwise,
+ *  * false - otherwise.
  */
 static bool isSafe(size_t mazeDimension, charArray *bitPositions, const char *visited, size_t aim) {
-    return (aim >= 0 && aim < mazeDimension) && (getBit(bitPositions, aim) == 0) && (visited[aim] == '0');
+    return (aim < mazeDimension) && (getBit(bitPositions, aim) == 0) && (visited[aim] == '0');
 }
 
 
 /**
  * Checking if the cell isn't out of maze border.
  * @param dimensionsArray – an array of dimensions.
- * @param dimSize - size of "dimensionsArray".
  * @param cell - a source cell.
- * @param neighbor - a destination cell.
+ * @param moveToLeft – true if move is to left, false - to right.
  * @param index - index of bit of the source cell.
  * @return - true, if the cell is out of border,
  * false - otherwise.
@@ -103,18 +102,15 @@ static bool outMazeBorder(Array *dimensionsArray, size_t cell, bool moveToLeft, 
 
 
 /**
- * Function which search the shortest path in maze
- * @param bitPositions - an array(binary) with stores info if cells are empty.
- * @param bitPosSize - size of "bitPositions" array.
- * @param mazeDimension – dimension of maze.
- * @param dimensionsArray – an array of dimensions.
- * @param dimSize - size of "dimensionsArray".
- * @param start - source cell in maze.
- * @param end - destination cell in maze.
+ *
+ * @param bitPositions – the array(hex) with stores info if cells are empty.
+ * @param dimensionsArray – the dimensions array of maze.
+ * @param startArray – the coordinates array of source cell.
+ * @param endArray – the coordinates array of destination cell.
  * @return the length of shortest path, if exists,
- *          -1 – otherwise.
+ *          (-1) – otherwise.
  */
-size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArray, Array *endArray, FILE *fptr) {
+size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArray, Array *endArray) {
     size_t dimSize = getLength(dimensionsArray);
     size_t volume = findVolume(dimensionsArray);
     size_t start = convertIndex(startArray, dimensionsArray);
@@ -122,12 +118,7 @@ size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArr
     char *visited = malloc(sizeof(char) * volume);
 
     if (visited == NULL) {
-        deleteArray(dimensionsArray);
-        deleteArray(startArray);
-        deleteArray(endArray);
-        deleteArrayChar(bitPositions);
-        fclose(fptr);
-        handleError(0);
+        safeExit(dimensionsArray, startArray, endArray, bitPositions, 0);
         return -2;
     }
     size_t minDistance = INT64_MAX;

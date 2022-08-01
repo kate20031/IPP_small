@@ -95,7 +95,6 @@ void removeFirst(queue *q) {
     elt *e;
     assert(!queueEmpty(q));
 
-    /* patch out first element */
     e = q->head;
     q->head = e->next;
     free(e);
