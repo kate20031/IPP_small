@@ -73,8 +73,8 @@ void convertIndexRev(size_t index, size_t *coordinatesArray, Array *dimensionArr
  * @return - true, if it's safe to go to the "aim" cell,
  *  * false - otherwise.
  */
-static bool isSafe(size_t mazeDimension, charArray *bitPositions, const char *visited, size_t aim) {
-    return (aim < mazeDimension) && (getBit(bitPositions, aim) == 0) && (visited[aim] == '0');
+static bool isSafe(size_t mazeDimension, charArray *bitPositions, charArray *visited, size_t aim) {
+    return (aim < mazeDimension) && (getBit(bitPositions, aim) == 0) && (getBit(visited, aim) == 0);
 }
 
 
@@ -115,7 +115,18 @@ size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArr
     size_t volume = findVolume(dimensionsArray);
     size_t start = convertIndex(startArray, dimensionsArray);
     size_t end = convertIndex(endArray, dimensionsArray);
-    char *visited = malloc(sizeof(char) * volume);
+    char *testAllocation = malloc(sizeof(char) * volume / 4);
+    if (testAllocation == NULL) {
+        safeExit(dimensionsArray, startArray, endArray, bitPositions, 0);
+        return -2;
+    }
+    free(testAllocation);
+
+    charArray *visited = createArrayChar();
+
+    for (size_t i = 0; i < volume / 4; i++) {
+        pushBackChar(visited, '0');
+    }
 
     if (visited == NULL) {
         safeExit(dimensionsArray, startArray, endArray, bitPositions, 0);
@@ -123,13 +134,10 @@ size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArr
     }
     size_t minDistance = INT64_MAX;
 
-    for (size_t i = 0; i < volume; i++) {
-        visited[i] = '0';
-    }
-
     struct queue *q;
     q = queueCreate();
-    visited[start] = '1';
+//    visited[start] = '1';
+    setBit(visited, start);
     addToQueue(q, start, 0);
 
     while (!queueEmpty(q)) {
@@ -148,19 +156,23 @@ size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArr
 
             if (isSafe(volume, bitPositions, visited, index + neighbor) &&
                 !outMazeBorder(dimensionsArray, index, false, i)) {
-                visited[index + neighbor] = '1';
+                setBit(visited, index + neighbor);
+//                visited[index + neighbor] = '1';
                 addToQueue(q, index + neighbor, distance + 1);
             }
             if (isSafe(volume, bitPositions, visited, index - neighbor) &&
                 !outMazeBorder(dimensionsArray, index, true, i)) {
-                visited[index - neighbor] = '1';
+//                visited[index - neighbor] = '1';
+                setBit(visited, index - neighbor);
+
                 addToQueue(q, index - neighbor, distance + 1);
             }
             neighbor *= getElementFromArray(dimensionsArray, i);
         }
     }
     deleteQueue(q);
-    free(visited);
+    deleteArrayChar(visited);
+//    free(visited);
     if (minDistance != INT64_MAX) {
         return minDistance;
     }

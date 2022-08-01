@@ -9,6 +9,7 @@
 #include <stdint.h>
 
 
+
 /**
  * Function writes the error to output "file.err".
  * Function writes the error to output "file.err" and
@@ -247,11 +248,7 @@ void checkInput(Array *array, int *err) {
  */
 bool checkErrors(Array *dimensionArray, Array *startArray, Array *endArray, charArray *bitPositions) {
 
-//    bool ok = checkArraysLength(startArray, endArray, dimensionArray);
-
-//    if (ok) {
     bool ok = checkFullCells(bitPositions, dimensionArray);
-//    }
     if (ok) {
         ok = checkNumberOfLines();
     }

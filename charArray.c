@@ -50,7 +50,8 @@ void deleteArrayChar(charArray *array) {
 
 
 char getElementFromArrayChar(charArray *array, size_t index) {
-    return array->v[index];
+    if (index >= getLengthChar(array)) return ' ';
+    return (array->v)[index];
 }
 
 
