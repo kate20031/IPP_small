@@ -7,11 +7,11 @@
 
 
 
- /**
-  * Function which finds volume of maze.
-  * @param dimensionArray – an array of dimensions.
-  * @return volume of maze.
-  */
+/**
+ * Function which finds volume of maze.
+ * @param dimensionArray – an array of dimensions.
+ * @return volume of maze.
+ */
 size_t findVolume(Array *dimensionArray) {
     size_t dimSize = getLength(dimensionArray);
     size_t volume = (dimSize == 0) ? 0 : 1;
@@ -136,7 +136,6 @@ size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArr
 
     struct queue *q;
     q = queueCreate();
-//    visited[start] = '1';
     setBit(visited, start);
     addToQueue(q, start, 0);
 
@@ -157,14 +156,11 @@ size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArr
             if (isSafe(volume, bitPositions, visited, index + neighbor) &&
                 !outMazeBorder(dimensionsArray, index, false, i)) {
                 setBit(visited, index + neighbor);
-//                visited[index + neighbor] = '1';
                 addToQueue(q, index + neighbor, distance + 1);
             }
             if (isSafe(volume, bitPositions, visited, index - neighbor) &&
                 !outMazeBorder(dimensionsArray, index, true, i)) {
-//                visited[index - neighbor] = '1';
                 setBit(visited, index - neighbor);
-
                 addToQueue(q, index - neighbor, distance + 1);
             }
             neighbor *= getElementFromArray(dimensionsArray, i);
@@ -172,7 +168,6 @@ size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArr
     }
     deleteQueue(q);
     deleteArrayChar(visited);
-//    free(visited);
     if (minDistance != INT64_MAX) {
         return minDistance;
     }

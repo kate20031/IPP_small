@@ -4,6 +4,10 @@
 #include <malloc.h>
 
 
+
+/**
+ * Struct to store size_t numbers.
+ */
 struct Array {
     size_t length;
     size_t memory;

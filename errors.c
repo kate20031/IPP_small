@@ -23,14 +23,21 @@ void handleError(int index) {
     }
 }
 
-
+/**
+ * Function that delete all allocated arrays and exits.
+ * @param dimensionsArray – an array of dimensions.
+ * @param startArray – the coordinates array of source cell.
+ * @param endArray – the coordinates array of destination cell.
+ * @param bitPositions – the array(hex) with stores info if cells are empty.
+ * @param error – – the pointer, set on 1, if error was found.
+ */
 void safeExit(Array *dimensionsArray, Array *startArray, Array *endArray,
-              charArray *bitPositions, int error) {
+              charArray *bitPositions, int err) {
     deleteArray(dimensionsArray);
     deleteArray(startArray);
     deleteArray(endArray);
     deleteArrayChar(bitPositions);
-    handleError(error);
+    handleError(err);
     exit(1);
 }
 
@@ -39,7 +46,7 @@ void safeExit(Array *dimensionsArray, Array *startArray, Array *endArray,
  * unction checks if length of coordinates array is the same dimensions'.
  * @param array – array to check.
  * @param dimensionArray – the dimensions array of maze.
- * @param err – pointer to variable of error.
+ * @param err – the pointer, set on 1, if error was found.
  */
 void checkArraysLength(Array *array, Array *dimensionArray, int *err) {
     if (getLength(array) != getLength(dimensionArray)) {
@@ -54,7 +61,7 @@ void checkArraysLength(Array *array, Array *dimensionArray, int *err) {
  * @param startArray – the coordinates array of source cell.
  * @param endArray – the coordinates array of destination cell.
  * @param bitPositions – the array(hex) with stores info if cells are empty.
- * @param err - the pointer to an error variable.
+ * @param err – the pointer, set on 1, if error was found.
  */
 void checkDimensions(Array *dimensionArray, Array *startArray, Array *endArray, charArray *bitPositions, int *err) {
     size_t max = SIZE_MAX;
@@ -107,7 +114,7 @@ static bool checkFullCells(charArray *bitPositions, Array *dimensionArray) {
  * in array, which stores info about maze's cells (bitPositions).
  * @param bitPositions – the array(hex) with stores info if cells are empty.
  * @param volume – volume of maze.
- * @param err - the pointer to an error variable.
+ * @param err – the pointer, set on 1, if error was found.
  */
 void checkVolume(charArray *bitPositions, size_t volume, int *err) {
     for (size_t i = getLengthChar(bitPositions) * 4 - 1; i >= volume; i--) {
@@ -200,7 +207,7 @@ static bool checkStartEndFull(Array *dimensionArray, Array *startArray, Array *e
 /**
  * Function checks correctness of input of 4 line (if starts with R)
  * @param numbers - array of numbers read after R.
- * @param err - the pointer to an error variable.
+ * @param err – the pointer, set on 1, if error was found.
  * @return - true, false, if number out of range was found or
  * if m is 0.
  * false – otherwise.
@@ -225,7 +232,7 @@ bool checkRInput(Array *numbers, int *err) {
  * Function set pointer to 1 and returns
  * , if 0 was found in array.
  * @param array - array of signs.
- * @param err - pointer to error variable.
+ * @param err – the pointer, set on 1, if error was found.
  */
 void checkInput(Array *array, int *err) {
     for (size_t i = 0; i < getLength(array); i++) {

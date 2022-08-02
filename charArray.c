@@ -5,6 +5,11 @@
 #include "input.h"
 
 
+
+/**
+ * Struct to store hex number (description
+ * of bits' position in maze).
+ */
 struct charArray {
     size_t length;
     size_t memory;
@@ -60,6 +65,14 @@ size_t getLengthChar(charArray *array) {
 }
 
 
+/**
+ * Function tells if a cell is full.
+ * @param array – array, which stores a hex number (description
+ *  of bits' positions).
+ * @param index – index of cell.
+ * @return   1 - if it's full,
+ *          0 - is empty.
+ */
 int getBit(charArray *array, size_t index) {
     char number;
 
@@ -73,7 +86,14 @@ int getBit(charArray *array, size_t index) {
 }
 
 
-static char *getBinary(size_t number) {
+/**
+ * Fuction convert and return int number to binary.
+ * @param number - int number.
+ * Function is used only once, to transform hex number to binary,
+ * so 4 bits are enough in binary format.
+ * @return binary form of number (binary array).
+ */
+static char *getBinary(int number) {
     char *temp = malloc(sizeof(char) * 4);
     int size = 0;
 
@@ -101,18 +121,18 @@ static char intToHex(int x) {
  * about 4 cells.
  * @param rest - rest of division index by 4.
  * @param index - decimal index of cell.
- * @param bitPositions - an array(binary) with stores info if cells are empty.
+ * @param array - an array(binary) with stores info if cells are empty.
  * @return  hex index of cell(char).
  */
-char indexToHex(size_t rest, size_t index, charArray *bitPositions) {
+char indexToHex(size_t rest, size_t index, charArray *array) {
     int number = 0;
-    char previousElem = getElementFromArrayChar(bitPositions, getLengthChar(bitPositions) - 1 - index);
+    char previousElem = getElementFromArrayChar(array, getLengthChar(array) - 1 - index);
     char *prevBinary = getBinary(hexToInt(previousElem));
-    char *currBinary = getBinary( 1 << rest);
+    char *currBinary = getBinary(1 << rest);
 
     for (int i = 3; i >= 0; i--) {
-        if ((prevBinary[i] == '1') || (currBinary[i]  == '1')) {
-              number+= 1 << (3 - i);
+        if ((prevBinary[i] == '1') || (currBinary[i] == '1')) {
+            number += 1 << (3 - i);
         }
     }
     free(prevBinary);
@@ -121,6 +141,11 @@ char indexToHex(size_t rest, size_t index, charArray *bitPositions) {
 }
 
 
+/**
+ * Function set a concrete bit (knowing its' index) on 1.
+ * @param array - an array(binary) with stores info if cells are empty.
+ * @param index - index of bit.
+ */
 void setBit(charArray *array, size_t index) {
     size_t newIndex = (index / 4);
     char hex = indexToHex(index % 4, newIndex, array);

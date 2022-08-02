@@ -18,9 +18,6 @@ struct elt {
 typedef struct elt elt;
 
 
-/** Function create a new empty queue.
- * @return  return new queue
- */
 queue *queueCreate(void) {
     queue *q;
     q = malloc(sizeof(queue));
@@ -29,12 +26,6 @@ queue *queueCreate(void) {
 }
 
 
-/**
- * Function add a new node to back of queue.
- * @param q - queue.
- * @param index – index of the cell in maze.
- * @param distance – maintains the length of the path from a source cell to a current cell.
- */
 void addToQueue(queue *q, size_t index, size_t distance) {
     elt *e;
     e = malloc(sizeof(elt));
@@ -53,12 +44,6 @@ void addToQueue(queue *q, size_t index, size_t distance) {
 }
 
 
-/** Function checks if the queue is empty.
- *
- * @param q – a queue.
- * @return 1 - if it's empty,
- *         0 - otherwise.
- */
 int queueEmpty(const queue *q) {
     return (q->head == 0);
 }
@@ -87,10 +72,6 @@ size_t getDistance(queue *q) {
 }
 
 
-/**
- * Function removes element from front of queue.
- * @param q  - a queue.
- */
 void removeFirst(queue *q) {
     elt *e;
     assert(!queueEmpty(q));
@@ -100,10 +81,7 @@ void removeFirst(queue *q) {
     free(e);
 }
 
-/**
- * Function delete queue.
- * @param q - a queue.
- */
+
 void deleteQueue(queue *q) {
     while (!queueEmpty(q)) {
         removeFirst(q);
