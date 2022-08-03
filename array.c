@@ -3,6 +3,11 @@
 #include "errors.h"
 #include <malloc.h>
 
+
+
+/**
+ * Struct to store size_t numbers.
+ */
 struct Array {
     size_t length;
     size_t memory;
@@ -10,8 +15,9 @@ struct Array {
 };
 typedef struct Array Array;
 
-Array* createArray() {
-    Array* array = malloc(sizeof (Array));
+
+Array *createArray() {
+    Array *array = malloc(sizeof(Array));
     if (array == NULL) {
         return array;
     }
@@ -26,7 +32,8 @@ Array* createArray() {
     return array;
 }
 
-void pushBack(Array* array, size_t element) {
+
+void pushBack(Array *array, size_t element) {
     if (array->memory == array->length) {
         array->v = realloc(array->v, sizeof(size_t) * array->memory * 2);
         if (array->v == NULL) {
@@ -39,22 +46,17 @@ void pushBack(Array* array, size_t element) {
 }
 
 
-void deleteArray(Array* array) {
+void deleteArray(Array *array) {
     free(array->v);
     free(array);
 }
 
-size_t getElementFromArray(Array* array, size_t index) {
+
+size_t getElementFromArray(Array *array, size_t index) {
     return array->v[index];
 }
 
-size_t getLength(Array *array){
-    return array->length;
-}
 
-void printArrayS(Array* array) {
-    for (size_t i = 1; i < array->length; ++i) {
-        printf("%ld ", array->v[i]);
-    }
-    printf("\n");
+size_t getLength(Array *array) {
+    return array->length;
 }

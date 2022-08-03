@@ -2,47 +2,39 @@
 #include <malloc.h>
 #include "queue.h"
 
+
 struct queue {
     struct elt *head;
     struct elt *tail;
 };
+typedef struct queue queue;
+
 
 struct elt {
     struct elt *next;
     size_t index;
     size_t distance;
 };
+typedef struct elt elt;
 
-/** Function create a new empty queue.
- *
- * @return  return new queue
- */
-struct queue *
-queueCreate(void)
-{
-    struct queue *q;
-    q = malloc(sizeof(struct queue));
+
+queue *queueCreate(void) {
+    queue *q;
+    q = malloc(sizeof(queue));
     q->head = q->tail = 0;
     return q;
 }
 
 
-/**
- * Function add a new node to back of queue.
- * @param q - queue.
- * @param index – index of the cell in maze.
- * @param distance – maintains the length of the path from a source cell to a current cell.
- */
-void addToQueue(struct queue *q, size_t index, size_t distance)
-{
-    struct elt *e;
-    e = malloc(sizeof(struct elt));
+void addToQueue(queue *q, size_t index, size_t distance) {
+    elt *e;
+    e = malloc(sizeof(elt));
     assert(e);
 
     e->index = index;
     e->distance = distance;
     e->next = 0;
-    if(q->head == 0) {
+    if (q->head == 0) {
         q->head = e;
     } else {
         q->tail->next = e;
@@ -52,14 +44,7 @@ void addToQueue(struct queue *q, size_t index, size_t distance)
 }
 
 
-/** Function checks if the queue is empty.
- *
- * @param q – a queue.
- * @return 1 - if it's empty,
- *         0 - otherwise.
- */
-int queueEmpty(const struct queue *q)
-{
+int queueEmpty(const queue *q) {
     return (q->head == 0);
 }
 
@@ -69,8 +54,7 @@ int queueEmpty(const struct queue *q)
  * @param q
  * @return
  */
-size_t getIndex(struct queue *q)
-{
+size_t getIndex(queue *q) {
     assert(!queueEmpty(q));
     return q->head->index;
 }
@@ -81,25 +65,26 @@ size_t getIndex(struct queue *q)
  * @param q - a queue.
  * @return  a distance from a source cell to a current cell.
  */
-size_t getDistance(struct queue *q)
-{
+size_t getDistance(queue *q) {
     assert(!queueEmpty(q));
 
     return q->head->distance;
 }
 
 
-/**
- * Function removes element from front of queue.
- * @param q  - a queue.
- */
-void removeFirst (struct queue *q)
-{
-    struct elt *e;
+void removeFirst(queue *q) {
+    elt *e;
     assert(!queueEmpty(q));
 
-    /* patch out first element */
     e = q->head;
     q->head = e->next;
     free(e);
+}
+
+
+void deleteQueue(queue *q) {
+    while (!queueEmpty(q)) {
+        removeFirst(q);
+    }
+    free(q);
 }
