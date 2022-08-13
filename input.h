@@ -6,11 +6,9 @@
 #include "charArray.h"
 #include <stdbool.h>
 #include <stdio.h>
+#define _POSIX_C_SOURCE 200809L
 
-
-void readInput(Array *dimensionsArray, Array *startArray, Array *endArray, charArray *bitPositions, int *err, FILE *fptr);
-
-void convertIndexRev(size_t index, size_t *coordinatesArray, Array *dimensionArray);
+void readInput(Array *dimensionsArray, Array *startArray, Array *endArray, charArray *bitPositions, int *err);
 
 int hexToInt(char c);
 

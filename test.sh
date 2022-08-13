@@ -3,13 +3,13 @@ declare -A results
 green='\033[0;32m'
 red='\033[0;31m'
 clear='\033[0m'
-make
 
-programme=$1
-tests=$2
+programme=`realpath "$1"`
+tests=`realpath "$2"`
 allTests=0
 correctTests=0
 
+make
 for inputFile in $tests/*; do
     if [[ $inputFile == *.in ]]; then
       if (($# < 2)); then
@@ -25,14 +25,13 @@ for inputFile in $tests/*; do
       expectedResult="$tests/$basefileName.out"
       expectedError="$tests/$basefileName.err"
 
-#      valgrind --error-exitcode=123 --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all
-       ./"$programme" < "$inputFile" 1> "file.out"
+      valgrind --error-exitcode=123 --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all $programme < "$inputFile" 1> "file.out"
 
       if [[ $? == 123 ]]; then
           echo "Out of memory";
       fi
 
-      ./"$programme" < "$inputFile" 2> "file.err"
+      $programme < "$inputFile" 2> "file.err"
       echo -e TEST: "$basefileName"
       if [ $? == 1 ] && [ -s $expectedResult ]; then
           echo "Error EXIT code";
@@ -74,3 +73,4 @@ done
 
 echo $correctTests / $allTests
 make clean
+

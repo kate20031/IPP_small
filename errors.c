@@ -23,6 +23,7 @@ void handleError(int index) {
     }
 }
 
+
 /**
  * Function that delete all allocated arrays and exits.
  * @param dimensionsArray – an array of dimensions.
@@ -145,6 +146,7 @@ static bool checkNumberOfLines() {
     return true;
 }
 
+
 /**
  * Function checks if start end end (2nd and 3rd lines) cell are no out of bounds.
  * @param dimensionArray – the dimensions array of maze.
@@ -188,7 +190,6 @@ void checkStartEndBounds(Array *dimensionArray, Array *startArray, Array *endArr
  *         true – otherwise.
  */
 static bool checkStartEndFull(Array *dimensionArray, Array *startArray, Array *endArray, charArray *bitPositions) {
-
     size_t start = convertIndex(startArray, dimensionArray);
     size_t end = convertIndex(endArray, dimensionArray);
 
@@ -227,6 +228,7 @@ bool checkRInput(Array *numbers, int *err) {
     return true;
 }
 
+
 /**
  * Function that checks correctness of 3 first lines input.
  * Function set pointer to 1 and returns
@@ -254,7 +256,6 @@ void checkInput(Array *array, int *err) {
  *          true – otherwise.
  */
 bool checkErrors(Array *dimensionArray, Array *startArray, Array *endArray, charArray *bitPositions) {
-
     bool ok = checkFullCells(bitPositions, dimensionArray);
     if (ok) {
         ok = checkNumberOfLines();

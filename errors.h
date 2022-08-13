@@ -8,9 +8,9 @@
 
 void handleError(int index);
 
-bool checkArraysLength(Array *startArray, Array *endArray, Array *dimensionArray);
+void checkArraysLength(Array *array, Array *dimensionArray, int* err);
 
-void checkDimensions(Array *dimensionArray, Array *startArray, Array *endArray, charArray *bitPositions, int *err, FILE *fptr);
+void checkDimensions(Array *dimensionArray, Array *startArray, Array *endArray, charArray *bitPositions, int *err);
 
 void checkVolume(charArray *bitPositions, size_t volume, int *err);
 
@@ -18,7 +18,11 @@ bool checkRInput(Array *numbers, int *err);
 
 void checkInput(Array *array, int *err);
 
-bool checkErrors(Array *dimensionArray, Array *startArray, Array *endArray, charArray *bitPositions, FILE *fptr);
+void checkStartEndBounds(Array *dimensionArray, Array *startArray, Array *endArray, charArray *bitPositions);
 
+bool checkErrors(Array *dimensionArray, Array *startArray, Array *endArray, charArray *bitPositions);
+
+void safeExit(Array *dimensionsArray, Array *startArray, Array *endArray,
+              charArray* bitPositions, int index);
 
 #endif //UNTITLED1_ERRORS_H

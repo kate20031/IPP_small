@@ -9,7 +9,7 @@
 
 size_t findVolume(Array *dimensionArray);
 
-size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArray, Array *endArray, FILE *fptr);
+size_t findPath(charArray *bitPositions, Array *dimensionsArray, Array *startArray, Array *endArray);
 
 size_t convertIndex(Array *coordinates, Array *dimensionArray);
 
